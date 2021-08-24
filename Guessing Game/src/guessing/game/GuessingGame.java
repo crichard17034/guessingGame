@@ -12,8 +12,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.scene.text.*;
+import javafx.scene.image.Image;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.TextField;
+import javafx.application.Platform;
 import java.lang.Object;
 import java.util.Random;
 
@@ -27,16 +30,17 @@ public class GuessingGame extends Application {
     public void start(Stage primaryStage) {
         
         Random rnd = new Random();
-        int targetNum;
-        Button btn = new Button();
+        int targetNum = rnd.nextInt(100) +1;
         TextField txtField = new TextField();
-        
-        
-        btn.setText("Submit Number");
-        btn.setOnAction(new EventHandler<ActionEvent>() 
+        Button submitBtn = new Button();
+        Button playAgain = new Button();
+        Button quitBtn = new Button();
+        Text messageBox = new Text();
+        submitBtn.setText("Submit Number");
+        submitBtn.setOnAction(new EventHandler<ActionEvent>() 
         {
             @Override
-            public void handle(ActionEvent event) 
+            public void handle(ActionEvent checkGuess) 
             {
                 try
                 {
@@ -47,21 +51,72 @@ public class GuessingGame extends Application {
                     {
                         
                     }
+                    else
+                    {
+                        if(inputNum > targetNum)
+                        {
+                            messageBox.setText("Try guessing lower.");
+                        }
+                        else
+                        {
+                            messageBox.setText("Try guessing higher.");
+                        }
+                    }
                 }
-                catch
+                catch(Exception e)
                 {
-                    
+                    messageBox.setText("Please enter a valid number.");
                 }
+                
+                txtField.setText("");
+            }
+        });        
+        
+        playAgain.setText("Play Again");
+        playAgain.setVisible(false);
+        playAgain.setOnAction(new EventHandler<ActionEvent>() 
+        {
+            @Override
+            public void handle(ActionEvent resetGame) 
+            {
+                playAgain.setVisible(false);
+                
             }
         });
         
-        txtField.setLayoutX(150);
+        quitBtn.setText("Quit");
+        quitBtn.setOnAction(new EventHandler<ActionEvent>() 
+        {
+            @Override
+            public void handle(ActionEvent quit) 
+            {
+                Platform.exit();
+            }
+        });
+        
+        
+        txtField.setLayoutX(225);
+        txtField.setLayoutY(200);
+        
+        submitBtn.setLayoutX(250);
+        submitBtn.setLayoutY(245);
+        
+        quitBtn.setLayoutX(530);
+        quitBtn.setLayoutY(245);
+        
+        messageBox.setLayoutX(75);
+        messageBox.setLayoutY(50);        
+        messageBox.setText("Guess a number from 1 to 100 and "
+            + "see if luck is on your side today!");
         
         AnchorPane root = new AnchorPane();
-        root.getChildren().add(btn);
+        root.getChildren().add(submitBtn);
+        root.getChildren().add(quitBtn);
+        root.getChildren().add(playAgain);
         root.getChildren().add(txtField);
+        root.getChildren().add(messageBox);
         
-        Scene scene = new Scene(root, 300, 250);
+        Scene scene = new Scene(root, 600, 300);
         
         primaryStage.setTitle("Guessing Game");
         primaryStage.setScene(scene);
