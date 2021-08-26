@@ -12,8 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.scene.text.*;
+import javafx.scene.text.Text;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.TextField;
 import javafx.application.Platform;
@@ -36,6 +37,11 @@ public class GuessingGame extends Application {
         Button playAgain = new Button();
         Button quitBtn = new Button();
         Text messageBox = new Text();
+        Image upArrow = new Image("images/upArrow.png");
+        Image downArrow = new Image("images/downArrow.png");
+        ImageView arrowView = new ImageView();
+
+        
         submitBtn.setText("Submit Number");
         submitBtn.setOnAction(new EventHandler<ActionEvent>() 
         {
@@ -49,21 +55,27 @@ public class GuessingGame extends Application {
                     
                     if(inputNum == targetNum)
                     {
-                        
+                        messageBox.setText("You've successfully guessed the "
+                                + "number!");
+                        playAgain.setVisible(true);
+                        submitBtn.setVisible(false);
+                        txtField.setVisible(false);
                     }
                     else
                     {
                         if(inputNum > targetNum)
                         {
                             messageBox.setText("Try guessing lower.");
+                            arrowView.setImage(downArrow);
                         }
                         else
                         {
                             messageBox.setText("Try guessing higher.");
+                            arrowView.setImage(upArrow);
                         }
                     }
                 }
-                catch(Exception e)
+                catch(NumberFormatException invalidNum)
                 {
                     messageBox.setText("Please enter a valid number.");
                 }
@@ -80,6 +92,10 @@ public class GuessingGame extends Application {
             public void handle(ActionEvent resetGame) 
             {
                 playAgain.setVisible(false);
+                messageBox.setText("Guess a number from 1 to 100 and "
+                    + "see if luck is on your side today!");
+                submitBtn.setVisible(true);
+                txtField.setVisible(true);
                 
             }
         });
@@ -93,7 +109,6 @@ public class GuessingGame extends Application {
                 Platform.exit();
             }
         });
-        
         
         txtField.setLayoutX(225);
         txtField.setLayoutY(200);
@@ -109,12 +124,19 @@ public class GuessingGame extends Application {
         messageBox.setText("Guess a number from 1 to 100 and "
             + "see if luck is on your side today!");
         
+        arrowView.setLayoutX(250);
+        arrowView.setLayoutY(85);
+        
+        playAgain.setLayoutX(260);
+        playAgain.setLayoutY(245);
+        
         AnchorPane root = new AnchorPane();
         root.getChildren().add(submitBtn);
         root.getChildren().add(quitBtn);
         root.getChildren().add(playAgain);
         root.getChildren().add(txtField);
         root.getChildren().add(messageBox);
+        root.getChildren().add(arrowView);
         
         Scene scene = new Scene(root, 600, 300);
         
@@ -123,9 +145,6 @@ public class GuessingGame extends Application {
         primaryStage.show();
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         launch(args);
     }
